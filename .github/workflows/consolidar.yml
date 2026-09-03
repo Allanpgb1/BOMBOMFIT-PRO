@@ -1,0 +1,67 @@
+name: Consolidar BOMBOM fit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  consolidar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Preparar ambiente
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+
+      - name: Descompactar projeto
+        run: |
+          mkdir -p /tmp/bombomfit
+          unzip -o bombom-fit-all-blocks.zip -d /tmp/bombomfit
+
+      - name: Localizar projeto Flutter
+        run: |
+          find /tmp/bombomfit -name pubspec.yaml -print
+
+      - name: Copiar projeto para a raiz
+        run: |
+          PROJECT=$(find /tmp/bombomfit -name pubspec.yaml -print -quit)
+
+          if [ -z "$PROJECT" ]; then
+            echo "pubspec.yaml não encontrado."
+            exit 1
+          fi
+
+          PROJECT_DIR=$(dirname "$PROJECT")
+          cp -R "$PROJECT_DIR"/. .
+
+      - name: Remover arquivo ZIP
+        run: |
+          rm -f bombom-fit-all-blocks.zip
+
+      - name: Mostrar estrutura final
+        run: |
+          echo "Estrutura final do BOMBOM fit:"
+          find . -maxdepth 2 -type f | sort | head -200
+
+      - name: Commit da consolidação
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração para salvar."
+          else
+            git commit -m "Consolidar projeto BOMBOM fit [skip ci]"
+            git push
+          fi
