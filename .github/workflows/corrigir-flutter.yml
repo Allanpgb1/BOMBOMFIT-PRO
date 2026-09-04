@@ -1,0 +1,44 @@
+name: Corrigir BOMBOM fit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  corrigir:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Entrar no projeto
+        working-directory: BOMBOMFIT-FINAL
+        run: |
+          flutter pub get
+
+      - name: Aplicar correções automáticas
+        working-directory: BOMBOMFIT-FINAL
+        run: |
+          dart fix --apply
+
+      - name: Verificar análise
+        working-directory: BOMBOMFIT-FINAL
+        run: |
+          flutter analyze
+
+      - name: Salvar correções
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add BOMBOMFIT-FINAL
+          git diff --cached --quiet || git commit -m "Corrigir análise Flutter"
+          git push
