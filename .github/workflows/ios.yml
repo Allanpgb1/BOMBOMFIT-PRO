@@ -1,66 +1,56 @@
 name: Build BOMBOM fit iOS
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+workflow_dispatch:
+push:
+branches:
+- main
 
 permissions:
-  contents: read
+contents: read
 
 jobs:
-  build-ios:
-    name: Gerar iOS
-    runs-on: macos-14
+build-ios:
+name: Gerar iOS
+runs-on: macos-14
 
-    steps:
-      - name: Baixar repositório
-        uses: actions/checkout@v6
-
-      - name: Configurar Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Verificar Flutter
-        run: flutter --version
-
-      - name: Restaurar plataforma iOS
-  run: |
-  if [ ! -f ios/Podfile ]; then
-    rm -rf ios
-    flutter create --platforms=ios .
-  fi
-
-      - name: Instalar dependências
-        run: flutter pub get
-
-      - name: Instalar CocoaPods
-        run: |
-          cd ios
-          pod install
-
-      - name: Analisar projeto
-        run: flutter analyze
-
-      - name: Executar testes
-        run: flutter test
-
-      - name: Gerar IPA
-        run: flutter build ipa --release --no-codesign
-
-      - name: Salvar IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: BOMBOM-fit-iOS
-          path: build/ios/ipa/*.ipa
-          if-no-files-found: error
-
-      - name: Salvar arquivo XCARCHIVE
-        uses: actions/upload-artifact@v4
-        with:
-          name: BOMBOM-fit-XCARCHIVE
-          path: build/ios/archive/*.xcarchive
-          if-no-files-found: warn
+steps:
+  - name: Baixar repositório
+    uses: actions/checkout@v4
+  - name: Configurar Flutter
+    uses: subosito/flutter-action@v2
+    with:
+      channel: stable
+      cache: true
+  - name: Verificar Flutter
+    run: flutter --version
+  - name: Restaurar plataforma iOS
+    shell: bash
+    run: |
+      if [ ! -f "ios/Podfile" ]; then
+        rm -rf ios
+        flutter create --platforms=ios .
+      fi
+  - name: Instalar dependências
+    run: flutter pub get
+  - name: Instalar CocoaPods
+    working-directory: ios
+    run: pod install --repo-update
+  - name: Analisar projeto
+    run: flutter analyze
+  - name: Executar testes
+    run: flutter test
+  - name: Gerar IPA
+    run: flutter build ipa --release --no-codesign
+  - name: Salvar IPA
+    uses: actions/upload-artifact@v4
+    with:
+      name: BOMBOM-fit-iOS
+      path: build/ios/ipa/*.ipa
+      if-no-files-found: error
+  - name: Salvar arquivo XCARCHIVE
+    uses: actions/upload-artifact@v4
+    with:
+      name: BOMBOM-fit-XCARCHIVE
+      path: build/ios/archive/*.xcarchive
+      if-no-files-found: warn
