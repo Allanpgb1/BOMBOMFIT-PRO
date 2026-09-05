@@ -28,10 +28,11 @@ jobs:
         run: flutter --version
 
       - name: Restaurar plataforma iOS
-        run: |
-          if [ ! -d ios ]; then
-            flutter create --platforms=ios .
-          fi
+  run: |
+    if [ ! -f ios/Podfile ]; then
+      rm -rf ios
+      flutter create --platforms=ios .
+    fi
 
       - name: Instalar dependências
         run: flutter pub get
