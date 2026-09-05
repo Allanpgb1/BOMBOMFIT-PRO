@@ -26,6 +26,12 @@ jobs:
 
       - name: Verificar Flutter
         run: flutter --version
+      - name: Restaurar plataforma Android
+        run: |
+          if [ ! -f android/app/build.gradle ] && [ ! -f android/app/build.gradle.kts ]; then
+            rm -rf android
+            flutter create --platforms=android .
+          fi
 
       - name: Instalar dependências
         run: flutter pub get
