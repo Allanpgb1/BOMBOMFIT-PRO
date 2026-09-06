@@ -1,0 +1,22 @@
+{
+  "project": "Bombom Fit Pro",
+  "base_commit": "7a0c0882235e946d1c23846a3de0957bb3e030e7",
+  "delivery": "all-blocks-foundation",
+  "blocks": [
+    "foundation",
+    "config",
+    "auth",
+    "onboarding",
+    "dashboard",
+    "water",
+    "workouts",
+    "nutrition",
+    "steps",
+    "progress",
+    "ai",
+    "profile",
+    "armazenamento local",
+    "tests",
+    "roadmap"
+  ]
+}
