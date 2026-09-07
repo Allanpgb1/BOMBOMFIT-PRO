@@ -39,3 +39,16 @@ A assinatura da Apple continua dependendo dos certificados/provisioning profiles
 - `lib/services/local_storage_service.dart` — armazenamento local
 - `lib/services/auth_service.dart` — autenticação local
 - `lib/services/local_coach_service.dart` — coach local
+
+## iOS via GitHub Actions
+
+O workflow `.github/workflows/ios.yml` está configurado para a branch `principal`.
+Ele cria a pasta `ios/` automaticamente quando necessário, instala CocoaPods, executa análise/testes e gera o IPA sem assinatura Apple.
+
+No GitHub: **Actions → Build BOMBOM fit iOS → Run workflow → principal**.
+
+O IPA sem assinatura serve para validar a compilação. Para instalar/distribuir no iPhone, é necessário configurar assinatura Apple (Apple Developer, certificado e provisioning profile).
+
+### iOS no GitHub Actions
+
+O workflow `Build BOMBOM fit iOS` usa a branch `principal` e cria/recria a plataforma iOS quando necessário, garantindo a presença do `ios/Podfile` antes da instalação do CocoaPods.
